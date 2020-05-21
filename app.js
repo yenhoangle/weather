@@ -26,11 +26,13 @@ window.addEventListener('load', ()=> {
                 .then(data => {
                     console.log(data);
                     //ES15 shorthand for data.currently.temperature + summary
-                    const{temperature, summary} = data.currently;
+                    const{temperature, summary, icon} = data.currently;
                     //set DOM elements from API
                     temperatureDegree.textContent = temperature;
                     temperatureDescription.textContent = summary;
                     locationTimezone.textContent = data.timezone;
+                    //set icon
+                    setIcons(icon, document.querySelector(".icon"));
                 });
         });
 
@@ -39,6 +41,12 @@ window.addEventListener('load', ()=> {
         h1.textContent = "Browser unsupported";
     }
     //https://maxdow.github.io/skycons/
-    // on Android, a nasty hack is needed: {"resizeClear": true}
-    function setIcons(icon, iconID)
+    // on Android, need to use : {"resizeClear": true}
+    function setIcons(icon, iconID){
+        //needs to format the json info to match icon name: convert - to _, then uppercase
+        const skycons = new Skycons({color:"white"});
+        const currentIcon = icon.replace(/-/g,"_").toUpperCase();
+        skycons.play();
+        return skycons.set(iconID, Skycons[currentIcon]);
+    }
 });
